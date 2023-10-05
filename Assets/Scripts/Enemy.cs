@@ -4,77 +4,69 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    Rigidbody2D rb;
+    Rigidbody2D rb; // Reference to the Rigidbody2D component for enemy movement.
 
-    public float xSpeed;
-    public float ySpeed;
-    public int score;
-    public bool canShoot;
-    public float fireRate;
-    public float health;
+    public float xSpeed; // Horizontal speed of the enemy.
+    public float ySpeed; // Vertical speed of the enemy.
+    public int score; // Score value of the enemy.
+    public bool canShoot; // Determines if the enemy can shoot. (like may check box sa enemy sprite)
+    public float fireRate; // Rate at which the enemy shoots.
+    public float health; // Health points of the enemy.
 
-    // Reference to the bullet prefab
-    public GameObject bulletPrefab;
+    public GameObject bulletPrefab; //basically yung bullet prefab, idk pano pa e-explain
+    public float bulletSpeed = 10f; // Speed of the bullets.
 
-    // Speed of the bullets (adjust as needed)
-    public float bulletSpeed = 10f;
-
-    
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>(); // bali ito yung nag h-handle or like nag c-connect sa kung pano mag move yung bullet sa game. Kumbaga pano mag behave ganon.
     }
 
     void Start()
     {
         if (canShoot)
         {
-            // Start shooting at the specified fire rate
+            //  Sets up enemy shooting if canShoot is enabled (although ayaw pa rin).
             InvokeRepeating("Shoot", fireRate, fireRate);
         }
     }
 
     void Update()
     {
-        rb.velocity = new Vector2(xSpeed, ySpeed * -1);
+        rb.velocity = new Vector2(xSpeed, ySpeed * -1); // Updates enemy movement.
     }
 
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.tag == "Player")
         {
-            col.gameObject.GetComponent<Player>().Damage();
+            col.gameObject.GetComponent<Player>().Damage(); // Damages the player if they collide with the enemy.
             Die();
         }
     }
 
     void Die()
     {
-        Destroy(gameObject);
-        PlayerPrefs.SetInt("Score", PlayerPrefs.GetInt("Score") + score);
+        Destroy(gameObject); // Destroys the enemy object.
+        PlayerPrefs.SetInt("Score", PlayerPrefs.GetInt("Score") + score); // Increases the player's score.
     }
 
     public void Damage()
     {
-        health--;
+        health--; // Decrease the enemy's health.
         if (health <= 0)
             Die();
     }
 
-    // Shooting logic to shoot vertically downward
+    // Shooting logic to shoot vertically downward (although ayaw talaga gumana)
     void Shoot()
     {
-        // Ensure the bullet prefab is assigned in the Inspector
         if (bulletPrefab != null)
         {
-            // Instantiate a bullet at the enemy's position and rotation
             GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
 
-            // Access the bullet's rigidbody2D (assuming you have one on the bullet prefab)
             Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
 
-            // Set the bullet's velocity to move downward (negative Y direction)
-            bulletRb.velocity = new Vector2(0f, -bulletSpeed); // Adjust bulletSpeed as needed
+            bulletRb.velocity = new Vector2(0f, -bulletSpeed); // Sets the bullet's velocity to move downward.
         }
     }
 }

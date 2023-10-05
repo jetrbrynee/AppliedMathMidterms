@@ -13,6 +13,6 @@ public class Scoring : MonoBehaviour
 
     void Update()
     {
-        GetComponent<Text>().text = PlayerPrefs.GetInt("Score") + "";
+        GetComponent<Text>().text = PlayerPrefs.GetInt("Score") + ""; // (pang update ng score real time)
     }
 }
